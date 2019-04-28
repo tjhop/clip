@@ -34,17 +34,9 @@ import (
 
 // let's declare some vars
 var (
-    cfgFile     string // location of config file
-    templateDir string // location of template directory
-
-    // These vars will be set by the linker during build time
-    // ie, builds will be run using gox like so:
-    //      gox -ldflags="-X github.com/tjhop/clip/cmd/root.builddate=$(date +%Y-%m-%d)" \
-    //      -osarch "linux/amd64" -output="$GOBIN/{{ OS }}/{{ Arch }}/clip
-    //      -osarch "darwin/amd64" -output="$GOBIN/{{ OS }}/{{ Arch }}/clip
-    version     string
-    commit      string
-    builddate   string
+    cfgFile     string  // location of config file
+    templateDir string  // location of template directory
+    showBuild   bool    // whether or not to print version info
 )
 
 // rootCmd is the bare `clip` command that cobra executes
@@ -55,13 +47,17 @@ var rootCmd = &cobra.Command{
 interact with the systems's clipboard`,
     Args: cobra.MaximumNArgs(1),
     Run: func(cmd *cobra.Command, args []string) {
-        if len(args) == 0 {
-            // If no subcommand is provided, run `clip list` by default
-            listCmd.Run(cmd, args)
-        } else if len(args) == 1 {
-            // If no subcommand is provided but a command line arg is
-            // provided, then run `clip copy $arg` by default
-            copyCmd.Run(cmd, args)
+        if showBuild {
+            versionCmd.Run(cmd, args)
+        } else {
+            if len(args) == 0 {
+                // If no subcommand is provided, run `clip list` by default
+                listCmd.Run(cmd, args)
+            } else if len(args) == 1 {
+                // If no subcommand is provided but a command line arg is
+                // provided, then run `clip copy $arg` by default
+                copyCmd.Run(cmd, args)
+            }
         }
     },
 }
@@ -85,6 +81,7 @@ func init() {
     // command Line flags
     rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.clip.yml)")
     rootCmd.PersistentFlags().StringVarP(&templateDir, "templatedir", "t", "", "location of template directory (default is $HOME/clip)")
+    rootCmd.Flags().BoolVarP(&showBuild, "version", "v", false, "clip version and build info")
 
     // use viper to bind config to CLI flags
     viper.BindPFlag("templatedir", rootCmd.PersistentFlags().Lookup("templatedir"))

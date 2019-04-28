@@ -89,9 +89,9 @@ Builds are using `go1.12.1` using [gox](https://github.com/mitchellh/gox):
 ~/go/src/github.com/tjhop/clip -> COMMIT=$(git rev-parse --short HEAD | tr -d "[ \r\n\']");
 TAG=$(git describe --always --tags --abbrev=0 | tr -d "[v\r\n]");
 echo "commit: $COMMIT"; echo "tag: $TAG";
-gox -ldflags="-X github.com/tjhop/clip/cmd/root.builddate=$(date +%Y-%m-%d)
-    -X github.com/tjhop/clip/cmd/root.version=$TAG
-    -X github.com/tjhop/clip/cmd/root.commit=$COMMIT" \
+gox -ldflags="-X github.com/tjhop/clip/cmd.builddate=$(date +%Y-%m-%d)
+    -X github.com/tjhop/clip/cmd.version=$TAG
+    -X github.com/tjhop/clip/cmd.commit=$COMMIT" \
     -osarch "linux/amd64" -output="$GOBIN/{{ .OS }}/{{ .Arch }}/clip" \
     -osarch "darwin/amd64" -output="$GOBIN/{{ .OS }}/{{ .Arch }}/clip"
 ```
@@ -100,7 +100,7 @@ gox -ldflags="-X github.com/tjhop/clip/cmd/root.builddate=$(date +%Y-%m-%d)
 - [ ] allow editing Clip config directly through `clip` commands like template files?
 - [ ] allow using different config file locations (viper has the ability to search config paths, I just couldn't think of other places I'd want the config during development)
 - [ ] figure out how to post release binaries on github (never done it before ¯\\\_(ツ)_/¯)
-- [ ] figure out how to report version/commit info that I'm bothering to embed in the build
+- [X] figure out how to report version/commit info that I'm bothering to embed in the build
 
 ## Credits/Thanks
 Clip is written using the [Cobra](https://github.com/spf13/cobra) and [Viper](https://github.com/spf13/viper) libraries, with the clipboard management provided by [atotto/clipboard library](https://github.com/atotto/clipboard). They made my life a heck of a life easier, so thanks to them <3.
