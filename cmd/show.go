@@ -24,7 +24,6 @@ import (
     "fmt"
     "os"
     "strings"
-    "path"
     "path/filepath"
     "io/ioutil"
 
@@ -39,7 +38,7 @@ var showCmd = &cobra.Command{
     Long: `Show the output of the raw clip template file (pretty much just cat the file)`,
     Args: cobra.ExactArgs(1),
     Run: func(cmd *cobra.Command, args []string) {
-        templateFilename := viper.GetString("templatedir") + "/" + os.Args[len(os.Args) - 1] + ".yml"
+        templateFilename := filepath.Join(viper.GetString("templatedir"), os.Args[len(os.Args) - 1] + ".yml")
         err := showClipTemplate(templateFilename)
         if err != nil {
             fmt.Printf("Call to show template failed: %v\n", err)
@@ -54,7 +53,7 @@ func init() {
 func showClipTemplate(filename string) error {
     // check if template file exists
     if _, err := os.Stat(filename); os.IsNotExist(err) {
-        fmt.Printf("Couldn't find a clip template with the name: '%s'\n", strings.TrimSuffix(path.Base(filename), filepath.Ext(filename)))
+        fmt.Printf("Couldn't find a clip template with the name: '%s'\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)))
     } else {
         buf, err := ioutil.ReadFile(filename)
         if err != nil {

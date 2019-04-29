@@ -25,7 +25,6 @@ import (
     "os"
     "os/exec"
     "strings"
-    "path"
     "path/filepath"
 
     "github.com/spf13/cobra"
@@ -49,7 +48,7 @@ Clip will check the following locations for the editor to use:
 `,
     Args: cobra.ExactArgs(1),
     Run: func(cmd *cobra.Command, args []string) {
-        templateFilename := viper.GetString("templatedir") + "/" + os.Args[len(os.Args) - 1] + ".yml"
+        templateFilename := filepath.Join(viper.GetString("templatedir"), os.Args[len(os.Args) - 1] + ".yml")
         err := openClipTemplateInEditor(templateFilename)
         if err != nil {
             fmt.Printf("Failed to open Clip template for editing: %v\n", err)
@@ -95,7 +94,7 @@ func openClipTemplateInEditor(filename string) error {
     cmd.Stderr = os.Stderr
     err := cmd.Run()
     if err != nil {
-        return fmt.Errorf("Failed to open Clip template '%s' in %s: %v\n", strings.TrimSuffix(path.Base(filename), filepath.Ext(filename)), editor, err)
+        return fmt.Errorf("Failed to open Clip template '%s' in %s: %v\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)), editor, err)
     }
 
     return nil

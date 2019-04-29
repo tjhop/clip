@@ -23,7 +23,6 @@ package cmd
 import (
     "fmt"
     "os"
-    "path"
     "path/filepath"
     "strings"
 
@@ -40,8 +39,8 @@ var renameCmd = &cobra.Command{
 and the new name must be available.`,
     Args: cobra.ExactArgs(2),
     Run: func(cmd *cobra.Command, args []string) {
-        sourceTemplateFilename := viper.GetString("templatedir") + "/" + os.Args[len(os.Args) - 2] + ".yml"
-        destinationTemplateFilename := viper.GetString("templatedir") + "/" + os.Args[len(os.Args) - 1] + ".yml"
+        sourceTemplateFilename := filepath.Join(viper.GetString("templatedir"), os.Args[len(os.Args) - 2] + ".yml")
+        destinationTemplateFilename := filepath.Join(viper.GetString("templatedir"), os.Args[len(os.Args) - 1] + ".yml")
         err := renameTemplateFile(sourceTemplateFilename, destinationTemplateFilename)
         if err != nil {
             fmt.Printf("Call to rename template failed: %v\n", err)
@@ -56,12 +55,12 @@ func init() {
 func renameTemplateFile(sourceFilename, destinationFilename string) error {
     // check to ensure source template exists
     if _, err := os.Stat(sourceFilename); os.IsNotExist(err) {
-        fmt.Printf("Couldn't find a Clip template with the name: '%s'\n", strings.TrimSuffix(path.Base(sourceFilename), filepath.Ext(sourceFilename)))
+        fmt.Printf("Couldn't find a Clip template with the name: '%s'\n", strings.TrimSuffix(filepath.Base(sourceFilename), filepath.Ext(sourceFilename)))
     }
 
     // check to ensure destination template does not exist
     if _, err := os.Stat(destinationFilename); err == nil {
-        fmt.Printf("No action taken: Found an existing Clip template with the name: '%s'\n", strings.TrimSuffix(path.Base(destinationFilename), filepath.Ext(destinationFilename)))
+        fmt.Printf("No action taken: Found an existing Clip template with the name: '%s'\n", strings.TrimSuffix(filepath.Base(destinationFilename), filepath.Ext(destinationFilename)))
     }
 
     err := os.Rename(sourceFilename, destinationFilename)

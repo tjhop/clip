@@ -23,7 +23,6 @@ package cmd
 import (
     "fmt"
     "os"
-    "path"
     "path/filepath"
     "strings"
 
@@ -39,7 +38,7 @@ var removeCmd = &cobra.Command{
     Long: `Delete a Clip template from your template folder`,
     Args: cobra.ExactArgs(1),
     Run: func(cmd *cobra.Command, args []string) {
-        templateFilename := viper.GetString("templatedir") + "/" + os.Args[len(os.Args) - 1] + ".yml"
+        templateFilename := filepath.Join(viper.GetString("templatedir"), os.Args[len(os.Args) - 1] + ".yml")
         err := removeTemplateFile(templateFilename)
         if err != nil {
             fmt.Printf("Call to remove Clip template failed: %v\n", err)
@@ -54,14 +53,14 @@ func init() {
 func removeTemplateFile(filename string) error {
     // check if template even exists
     if _, err := os.Stat(filename); os.IsNotExist(err) {
-        fmt.Printf("Couldn't find a Clip template with the name: '%s'\n", strings.TrimSuffix(path.Base(filename), filepath.Ext(filename)))
+        fmt.Printf("Couldn't find a Clip template with the name: '%s'\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)))
     } else {
         err := os.Remove(filename)
         if err != nil {
             return fmt.Errorf("Failed to remove Clip template file: %v\n", err)
         }
 
-        fmt.Printf("Clip template '%s' removed\n", strings.TrimSuffix(path.Base(filename), filepath.Ext(filename)))
+        fmt.Printf("Clip template '%s' removed\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)))
     }
 
     return nil

@@ -23,7 +23,7 @@ package cmd
 import (
     "fmt"
     "os"
-    "path"
+    "path/filepath"
 
     homedir "github.com/mitchellh/go-homedir"
     "github.com/spf13/cobra"
@@ -100,7 +100,7 @@ func initClip() {
         viper.SetConfigFile(cfgFile)
     } else {
         // Set config file to home directory + name ".clip.yml"
-        cfgFile = path.Join(home, "." + cfgName) + ".yml"
+        cfgFile = filepath.Join(home, "." + cfgName + ".yml")
         viper.SetConfigType("yaml")
         viper.SetConfigFile(cfgFile)
     }
@@ -108,7 +108,7 @@ func initClip() {
     if viper.GetString("templatedir") != "" {
         viper.Set("templatedir", templateDir)
     } else {
-        viper.Set("templatedir", home + "/" + cfgName)
+        viper.Set("templatedir", filepath.Join(home, cfgName))
     }
 
     viper.AutomaticEnv() // read in environment variables that match

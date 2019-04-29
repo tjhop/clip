@@ -24,7 +24,6 @@ import (
     "fmt"
     "os"
     "strings"
-    "path"
     "path/filepath"
     "io/ioutil"
 
@@ -62,7 +61,7 @@ var createCmd = &cobra.Command{
 `,
     Args: cobra.ExactArgs(1),
     Run: func(cmd *cobra.Command, args []string) {
-        templateFilename := viper.GetString("templatedir") + "/" + os.Args[len(os.Args) - 1] + ".yml"
+        templateFilename := filepath.Join(viper.GetString("templatedir"), os.Args[len(os.Args) - 1] + ".yml")
         err := writeTemplateFile(templateFilename)
         if err != nil {
             fmt.Printf("Call to create template failed: %v\n", err)
@@ -82,9 +81,9 @@ func writeTemplateFile(filename string) error {
             return fmt.Errorf("Failed to create template file: %v\n", err)
         }
 
-        fmt.Printf("Clip template '%s' created\n", strings.TrimSuffix(path.Base(filename), filepath.Ext(filename)))
+        fmt.Printf("Clip template '%s' created\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)))
     } else {
-        fmt.Printf("A Clip template with the name '%s' already exists\n", strings.TrimSuffix(path.Base(filename), filepath.Ext(filename)))
+        fmt.Printf("A Clip template with the name '%s' already exists\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)))
     }
 
     return nil

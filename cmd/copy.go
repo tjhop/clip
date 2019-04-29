@@ -24,7 +24,6 @@ import (
     "fmt"
     "os"
     "strings"
-    "path"
     "path/filepath"
 
     "github.com/spf13/cobra"
@@ -41,10 +40,10 @@ var copyCmd = &cobra.Command{
     Long: `Copy a Clip template to your clipboard`,
     Args: cobra.ExactArgs(1),
     Run: func(cmd *cobra.Command, args []string) {
-        templateFilename := viper.GetString("templatedir") + "/" + os.Args[len(os.Args) - 1] + ".yml"
+        templateFilename := filepath.Join(viper.GetString("templatedir"), os.Args[len(os.Args) - 1] + ".yml")
         err := writeClipTemplateToClipboard(templateFilename)
         if err != nil {
-            fmt.Printf("Failed to copy Clip template '%s' to clipboard: %v\n", strings.TrimSuffix(path.Base(templateFilename), filepath.Ext(templateFilename)), err)
+            fmt.Printf("Failed to copy Clip template '%s' to clipboard: %v\n", strings.TrimSuffix(filepath.Base(templateFilename), filepath.Ext(templateFilename)), err)
         }
     },
 }
@@ -56,7 +55,7 @@ func init() {
 func writeClipTemplateToClipboard(filename string) error {
     tmpl, err := helpers.LoadTemplateFile(filename)
     if err != nil {
-        return fmt.Errorf("Couldn't load Clip template file '%s': %v\n", strings.TrimSuffix(path.Base(filename), filepath.Ext(filename)), err)
+        return fmt.Errorf("Couldn't load Clip template file '%s': %v\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)), err)
     }
 
     renderedTemplateString, err := helpers.ExecuteTemplate(tmpl)

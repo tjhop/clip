@@ -88,7 +88,7 @@ func listTemplates(dir string) error {
             // if `--tags` filter was provided, check if file contains one of the provided tags
             if len(tags) > 0 {
                 for _, tag := range tags {
-                    tmpl, err := helpers.LoadTemplateFile(dir + "/" + info.Name())
+                    tmpl, err := helpers.LoadTemplateFile(filepath.Join(dir, info.Name()))
                     if err != nil {
                         return fmt.Errorf("Couldn't load Clip template '%s' to check for tags: %v\n", filenameWithoutExtension, err)
                     }
@@ -121,7 +121,7 @@ func listTemplateTags(dir string) error {
     // walk the template directory and get the files
     err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
         if !info.IsDir() && (filepath.Ext(path) == ".yaml" || filepath.Ext(path) == ".yml") {
-            tmpl, err := helpers.LoadTemplateFile(dir + "/" + info.Name())
+            tmpl, err := helpers.LoadTemplateFile(filepath.Join(dir, info.Name()))
             if err != nil {
                 return fmt.Errorf("Couldn't load Clip template to check for tags: %v\n", err)
             }
