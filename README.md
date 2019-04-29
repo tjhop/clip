@@ -19,20 +19,22 @@ Usage:
   clip [command]
 
 Available Commands:
-  copy        Copy a Clip template to your clipboard
+  copy        Copy a Clip template to your clipboard (default if just running `clip $arg`)
   create      Create a new Clip template
   edit        Open Clip template in text editor
   help        Help about any command
-  list        List available Clip templates/tags
+  list        List available Clip templates/tags (default if just running `clip`)
   paste       Print clipboard contents to stdout
   remove      Remove a Clip template
   rename      Rename a Clip template
   show        Show the raw Clip template file
+  version     Print clip build info
 
 Flags:
       --config string        config file (default is $HOME/.clip.yml)
   -h, --help                 help for clip
   -t, --templatedir string   location of template directory (default is $HOME/clip)
+  -v, --version              clip version and build info
 
 Use "clip [command] --help" for more information about a command.
 ```
@@ -139,6 +141,7 @@ Release archive creation:
 - [X] figure out how to post release binaries on github (never done it before ¯\\\_(ツ)_/¯)
 - [X] figure out how to report version/commit info that I'm bothering to embed in the build
 - [X] fix reading environment var for EDITOR so it actually overrides config defaults
+- [ ] convert all manual filepath building to use `path.Join`
 
 ## Credits/Thanks
 Clip is written using the [Cobra](https://github.com/spf13/cobra) and [Viper](https://github.com/spf13/viper) libraries, with the clipboard management provided by [atotto/clipboard library](https://github.com/atotto/clipboard). They made my life a heck of a life easier, so thanks to them <3.
