@@ -35,8 +35,8 @@ var (
 
 var versionCmd = &cobra.Command{
     Use:   "version",
-    Short: "Print clip build info",
-    Long: `Print clip build info`,
+    Short: "Print Clip build info",
+    Long: `Print Clip build info`,
     Run: func(cmd *cobra.Command, args []string) {
         fmt.Printf("clip %s (%s) [built %s]\n", version, commit, builddate)
     },

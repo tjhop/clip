@@ -28,7 +28,7 @@ Available Commands:
   remove      Remove a Clip template
   rename      Rename a Clip template
   show        Show the raw Clip template file
-  version     Print clip build info
+  version     Print Clip build info
 
 Flags:
       --config string        config file (default is $HOME/.clip.yml)
