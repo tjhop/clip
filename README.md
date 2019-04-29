@@ -90,7 +90,7 @@ template:
     {{ .greeting }}
 
     This is the general format of a Clip template file. The tags assigned to this template can be used to filter output when using the `list` command, like so:
-    `clip list --tagsonly`
+    `clip list --tags-only`
     `clip list --tags personal,golang
 
     More info can be found using the `--help` flag on any of the subcommands, too.
@@ -106,7 +106,7 @@ After copying the template, we'll end up with the following content on our clipb
 Hello, Clip User!
 
 This is the general format of a Clip template file. The tags assigned to this template can be used to filter output when using the `list` command, like so:
-`clip list --tagsonly`
+`clip list --tags-only`
 `clip list --tags personal,golang
 
 More info can be found using the `--help` flag on any of the subcommands, too.

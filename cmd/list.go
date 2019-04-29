@@ -59,8 +59,8 @@ func init() {
     // command Line flags
     listCmd.Flags().StringSliceVar(&tags, "tags", []string{}, "comma separated list of tags to filter templates")
     listCmd.Flags().BoolVar(&tagsOnly, "tags-only", false, "list all tags used in the templates")
-    listCmd.Flags().BoolVar(&tagsOnly, "listtags", false, "alias for '--tags-only' flag")
-    listCmd.Flags().BoolVar(&tagsOnly, "showtags", false, "alias for '--tags-only' flag")
+    listCmd.Flags().BoolVar(&tagsOnly, "list-tags", false, "alias for '--tags-only' flag")
+    listCmd.Flags().BoolVar(&tagsOnly, "show-tags", false, "alias for '--tags-only' flag")
 }
 
 func list() {
