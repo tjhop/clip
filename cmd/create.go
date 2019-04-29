@@ -33,7 +33,19 @@ import (
 )
 
 const baseTemplateFileString string =
-`# See README.md for detailed information and examples
+`# See README.md for detailed information
+#
+# Example template:
+#
+# tags:
+#   - personal
+#
+# template:
+#   vars:
+#     value: Hello, world!
+#   text: |
+#     The value of the variable is: "{{ .value }}"
+
 tags: []
 
 template:
