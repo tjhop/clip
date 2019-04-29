@@ -101,6 +101,7 @@ gox -ldflags="-X github.com/tjhop/clip/cmd.builddate=$(date +%Y-%m-%d)
 - [ ] allow using different config file locations (viper has the ability to search config paths, I just couldn't think of other places I'd want the config during development)
 - [ ] figure out how to post release binaries on github (never done it before ¯\\\_(ツ)_/¯)
 - [X] figure out how to report version/commit info that I'm bothering to embed in the build
+- [X] fix reading environment var for EDITOR so it actually overrides config defaults
 
 ## Credits/Thanks
 Clip is written using the [Cobra](https://github.com/spf13/cobra) and [Viper](https://github.com/spf13/viper) libraries, with the clipboard management provided by [atotto/clipboard library](https://github.com/atotto/clipboard). They made my life a heck of a life easier, so thanks to them <3.

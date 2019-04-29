@@ -112,7 +112,6 @@ func initClip() {
     }
 
     viper.AutomaticEnv() // read in environment variables that match
-    viper.SetEnvPrefix(cfgName)
 
     // If a config file is found, read it in.
     if err := viper.ReadInConfig(); err != nil {

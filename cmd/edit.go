@@ -84,12 +84,6 @@ func openClipTemplateInEditor(filename string) error {
         if err != nil {
             return fmt.Errorf("Could not find an editor named '%s' in your PATH: %v\n", editor, err)
         }
-    } else if os.Getenv("EDITOR") != "" {
-        editor = os.Getenv("EDITOR")
-        _, err := exec.LookPath(editor)
-        if err != nil {
-            return fmt.Errorf("Could not find an editor named '%s' in your PATH: %v\n", editor, err)
-        }
     } else {
         return fmt.Errorf("No editor defined!")
     }
