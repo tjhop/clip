@@ -99,7 +99,7 @@ gox -ldflags="-X github.com/tjhop/clip/cmd.builddate=$(date +%Y-%m-%d)
 ## TODO
 - [ ] allow editing Clip config directly through `clip` commands like template files?
 - [ ] allow using different config file locations (viper has the ability to search config paths, I just couldn't think of other places I'd want the config during development)
-- [ ] figure out how to post release binaries on github (never done it before ¯\\\_(ツ)_/¯)
+- [X] figure out how to post release binaries on github (never done it before ¯\\\_(ツ)_/¯)
 - [X] figure out how to report version/commit info that I'm bothering to embed in the build
 - [X] fix reading environment var for EDITOR so it actually overrides config defaults
 
