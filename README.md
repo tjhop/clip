@@ -74,7 +74,7 @@ What the keys do:
 | `template:text` | The text to be rendered through Go's template system and loaded onto your clipboard | Accepts a YAML multi-line string (be careful with indentation!) |
 
 Example template:
-```
+```shell
 ~ $ clip show readme-template-example
 tags:
   - personal
@@ -100,7 +100,7 @@ template:
 ```
 
 After copying the template, we'll end up with the following content on our clipboard:
-```
+```shell
 ~ $ clip copy readme-template-example
 ~ $ clip paste
 Hello, Clip User!
@@ -118,7 +118,7 @@ tjhop
 ## Building
 Builds are using `go1.12.1` with [gox](https://github.com/mitchellh/gox):
 
-```
+```shell
 ~/go/src/github.com/tjhop/clip -> COMMIT=$(git rev-parse --short HEAD | tr -d "[ \r\n\']");
 TAG=$(git describe --always --tags --abbrev=0 | tr -d "[v\r\n]");
 echo "commit: $COMMIT"; echo "tag: $TAG";
@@ -130,7 +130,7 @@ gox -ldflags="-X github.com/tjhop/clip/cmd.builddate=$(date +%Y-%m-%d)
 ```
 
 Release archive creation:
-```
+```shell
 ~/go/src/github.com/tjhop/clip -> tar vzcf "clip-$(git describe --always --tags --abbrev=0 | tr -d '[v\r\n]').darwin-amd64.tar.gz" -C $GOBIN/darwin/amd64/ -s /\./clip/g .
 ~/go/src/github.com/tjhop/clip -> tar vzcf "clip-$(git describe --always --tags --abbrev=0 | tr -d '[v\r\n]').linux-amd64.tar.gz" -C $GOBIN/linux/amd64/ -s /\./clip/g .
 ```
