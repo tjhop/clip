@@ -47,7 +47,7 @@ Example:
   clip list
   clip list --tags-only
   clip list --tags personal,work`,
-    Short: "List available Clip templates/tags",
+    Short: "List available Clip templates/tags (default if just running `clip`)",
     Run: func(cmd *cobra.Command, args []string) {
         list()
     },

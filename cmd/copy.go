@@ -37,7 +37,7 @@ import (
 var copyCmd = &cobra.Command{
     Use:   "copy <Clip template>",
     Aliases: []string{"load", "in"},
-    Short: "Copy a Clip template to your clipboard",
+    Short: "Copy a Clip template to your clipboard (default if just running `clip $arg`)",
     Long: `Copy a Clip template to your clipboard`,
     Args: cobra.ExactArgs(1),
     Run: func(cmd *cobra.Command, args []string) {
