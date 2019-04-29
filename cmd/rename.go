@@ -40,7 +40,6 @@ var renameCmd = &cobra.Command{
 and the new name must be available.`,
     Args: cobra.ExactArgs(2),
     Run: func(cmd *cobra.Command, args []string) {
-        fmt.Println("rename called")
         sourceTemplateFilename := viper.GetString("templatedir") + "/" + os.Args[len(os.Args) - 2] + ".yml"
         destinationTemplateFilename := viper.GetString("templatedir") + "/" + os.Args[len(os.Args) - 1] + ".yml"
         err := renameTemplateFile(sourceTemplateFilename, destinationTemplateFilename)
