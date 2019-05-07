@@ -142,7 +142,7 @@ Release archive creation:
 - [X] figure out how to report version/commit info that I'm bothering to embed in the build
 - [X] fix reading environment var for EDITOR so it actually overrides config defaults
 - [X] convert all manual filepath building to use `path.Join`
-- [ ] add ability copy from stdin? would allow ability to pipe output from commands to `clip copy`, which may be a nice abstraction to having to remember OS-specific commands
+- [X] add ability copy from stdin? would allow ability to pipe output from commands to `clip copy`, which may be a nice abstraction to having to remember OS-specific commands
 
 ## Credits/Thanks
 Clip is written using the [Cobra](https://github.com/spf13/cobra) and [Viper](https://github.com/spf13/viper) libraries, with the clipboard management provided by [atotto/clipboard library](https://github.com/atotto/clipboard). They made my life a heck of a life easier, so thanks to them <3.

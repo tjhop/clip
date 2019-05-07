@@ -25,6 +25,7 @@ import (
     "os"
     "strings"
     "path/filepath"
+    "bufio"
 
     "github.com/spf13/cobra"
     "github.com/spf13/viper"
@@ -36,14 +37,21 @@ import (
 var copyCmd = &cobra.Command{
     Use:   "copy <Clip template>",
     Aliases: []string{"load", "in"},
-    Short: "Copy a Clip template to your clipboard (default if just running `clip $arg`)",
-    Long: `Copy a Clip template to your clipboard`,
-    Args: cobra.ExactArgs(1),
+    Short: "Copy a Clip template/Stdin to your clipboard (default if just running `clip $arg`)",
+    Long: `Copy a Clip template or command output from Stdin to your clipboard`,
+    Args: cobra.MaximumNArgs(1),
     Run: func(cmd *cobra.Command, args []string) {
-        templateFilename := filepath.Join(viper.GetString("templatedir"), os.Args[len(os.Args) - 1] + ".yml")
-        err := writeClipTemplateToClipboard(templateFilename)
-        if err != nil {
-            fmt.Printf("Failed to copy Clip template '%s' to clipboard: %v\n", strings.TrimSuffix(filepath.Base(templateFilename), filepath.Ext(templateFilename)), err)
+        if len(args) == 0 {
+            err := writeStdinToClipboard()
+            if err != nil {
+                fmt.Printf("Failed to copy from stdin: %v\n", err)
+            }
+        } else if len(args) == 1 {
+            templateFilename := filepath.Join(viper.GetString("templatedir"), os.Args[len(os.Args) - 1] + ".yml")
+            err := writeClipTemplateToClipboard(templateFilename)
+            if err != nil {
+                fmt.Printf("Failed to copy Clip template '%s' to clipboard: %v\n", strings.TrimSuffix(filepath.Base(templateFilename), filepath.Ext(templateFilename)), err)
+            }
         }
     },
 }
@@ -66,6 +74,35 @@ func writeClipTemplateToClipboard(filename string) error {
     err = clipboard.WriteAll(renderedTemplateString)
     if err != nil {
         return fmt.Errorf("Failed to write Clip template to clipboard: %v\n", err)
+    }
+
+    return nil
+}
+
+func writeStdinToClipboard() error {
+    info, err := os.Stdin.Stat()
+    if err != nil {
+        panic(err)
+    }
+
+    if info.Mode()&os.ModeCharDevice == os.ModeCharDevice || info.Size() <= 0 {
+        fmt.Println("Invalid input device for stdin")
+    } else {
+        scanner := bufio.NewScanner(os.Stdin)
+        var output []string
+
+        for scanner.Scan() {
+            output = append(output, scanner.Text())
+        }
+
+        if scanner.Err() != nil {
+            return fmt.Errorf("Failed to read data from stdin: %v\n", err)
+        }
+
+        err := clipboard.WriteAll(strings.Join(output, "\n"))
+        if err != nil {
+            return fmt.Errorf("Failed to write data from stdin to clipboard: %v\n", err)
+        }
     }
 
     return nil
