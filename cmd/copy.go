@@ -85,7 +85,7 @@ func writeStdinToClipboard() error {
         panic(err)
     }
 
-    if info.Mode()&os.ModeCharDevice == os.ModeCharDevice || info.Size() <= 0 {
+    if info.Mode()&os.ModeCharDevice == os.ModeCharDevice {
         fmt.Println("Invalid input device for stdin")
     } else {
         scanner := bufio.NewScanner(os.Stdin)
