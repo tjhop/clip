@@ -49,7 +49,7 @@ vars:
 ```
 Variables defined in the config file are global and available to all clip templates. If the variable is also defined in the template, the template version will override the global.
 
-You'll need to edit this config file directly to change these default values.
+Currently, you'll need to edit this config file directly to change these default values.
 
 Template configuration can be done almost entirely through the `clip` CLI and it's subcommands (create, edit, remove, rename, list, etc)
 
@@ -58,7 +58,19 @@ Clip templates are YAML files with [Golang templated](https://golang.org/pkg/tex
 
 The base template that gets created is pretty simple:
 ```yml
-# See README.md for detailed information and examples
+# See README.md for detailed information
+#
+# Example template:
+#
+# tags:
+#   - personal
+#
+# template:
+#   vars:
+#     value: Hello, world!
+#   text: |
+#     The value of the variable is: "{{ .value }}"
+
 tags: []
 
 template:
@@ -91,7 +103,7 @@ template:
 
     This is the general format of a Clip template file. The tags assigned to this template can be used to filter output when using the `list` command, like so:
     `clip list --tags-only`
-    `clip list --tags personal,golang
+    `clip list --tags personal,golang`
 
     More info can be found using the `--help` flag on any of the subcommands, too.
 
@@ -107,7 +119,7 @@ Hello, Clip User!
 
 This is the general format of a Clip template file. The tags assigned to this template can be used to filter output when using the `list` command, like so:
 `clip list --tags-only`
-`clip list --tags personal,golang
+`clip list --tags personal,golang`
 
 More info can be found using the `--help` flag on any of the subcommands, too.
 
