@@ -1,0 +1,46 @@
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+    ldflags:
+      - -X github.com/tjhop/clip/cmd.builddate={{ .CommitDate }}
+      - -X github.com/tjhop/clip/cmd.version={{ .Version }}
+      - -X github.com/tjhop/clip/cmd.commit={{ .Commit }}
+    binary: clip
+archives:
+  - replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+nfpms:
+  - package_name: 'clip'
+    homepage: 'https://github.com/tjhop/clip'
+    maintainer: 'TJ Hoplock <t.hoplock@gmail.com>'
+    description: 'Cross Platform CLI clipboard and templating tool'
+    formats:
+      - apk
+      - deb
+      - rpm
+    bindir: /usr/bin
+    contents:
+      - src: ./README.md
+        dst: /usr/share/doc/tjhop/clip/README.md
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^Merge pull request'
+      - '^ci(?:\(\w+\))?\!?:'
+      - '^docs(?:\(\w+\))?\!?:'
+      - '^test(?:\(\w+\))?\!?:'

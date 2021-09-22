@@ -128,24 +128,30 @@ tjhop
 ```
 
 ## Building
-Builds are using `go1.12.1` with [gox](https://github.com/mitchellh/gox):
+### Binaries
+Binaries are built by [goreleaser and github actions](https://goreleaser.com/ci/actions/). Please see [Releases](#Releases) for more information on building binaries for release.
 
-```shell
-~/go/src/github.com/tjhop/clip -> COMMIT=$(git rev-parse --short HEAD | tr -d "[ \r\n\']");
-TAG=$(git describe --always --tags --abbrev=0 | tr -d "[v\r\n]");
-echo "commit: $COMMIT"; echo "tag: $TAG";
-gox -ldflags="-X github.com/tjhop/clip/cmd.builddate=$(date +%Y-%m-%d)
-    -X github.com/tjhop/clip/cmd.version=$TAG
-    -X github.com/tjhop/clip/cmd.commit=$COMMIT" \
-    -osarch "linux/amd64" -output="$GOBIN/{{ .OS }}/{{ .Arch }}/clip" \
-    -osarch "darwin/amd64" -output="$GOBIN/{{ .OS }}/{{ .Arch }}/clip"
-```
+For testing purposes, binaries can be built manually, as well:
+    ```shell
+    COMMIT=$(git rev-parse --short HEAD);
+    TAG=$(git describe --always --tags --abbrev=0 | tr -d "[v\r\n]");
+    go build -o clip -ldflags="-X github.com/tjhop/clip/cmd.builddate=$(date --iso-8601=seconds)
+        -X github.com/tjhop/clip/cmd.version=$TAG
+        -X github.com/tjhop/clip/cmd.commit=$COMMIT"
+    ```
 
-Release archive creation:
-```shell
-~/go/src/github.com/tjhop/clip -> tar vzcf "clip-$(git describe --always --tags --abbrev=0 | tr -d '[v\r\n]').darwin-amd64.tar.gz" -C $GOBIN/darwin/amd64/ -s /\./clip/g .
-~/go/src/github.com/tjhop/clip -> tar vzcf "clip-$(git describe --always --tags --abbrev=0 | tr -d '[v\r\n]').linux-amd64.tar.gz" -C $GOBIN/linux/amd64/ -s /\./clip/g .
-```
+### Releases
+Releases are handled by [goreleaser and github actions](https://goreleaser.com/ci/actions/).
+
+In order to cut a release, a new semver tag must be pushed to the repo:
+    Note: It's highly recommended to install [SVU](https://github.com/caarlos0/svu) to help with tag creation.
+
+    ```shell
+    git checkout master
+    git fetch --tags origin master
+    git tag $(svu next)
+    git push --tags upstream master
+    ```
 
 ## TODO
 - [ ] allow editing Clip config directly through `clip` commands like template files?
