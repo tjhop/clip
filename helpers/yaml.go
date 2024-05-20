@@ -22,7 +22,7 @@ package helpers
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 
 	"gopkg.in/yaml.v2"
 )
@@ -38,7 +38,7 @@ type TemplateFile struct {
 }
 
 func LoadTemplateFile(filename string) (TemplateFile, error) {
-	bytes, err := ioutil.ReadFile(filename)
+	bytes, err := os.ReadFile(filename)
 	if err != nil {
 		return TemplateFile{}, err
 	}
@@ -58,7 +58,7 @@ func WriteConfigFile(filename string, data interface{}) error {
 		return fmt.Errorf("Could not marshal data:\n%#v\n...to yaml: %v", data, err)
 	}
 
-	err = ioutil.WriteFile(filename, bytes, 0644)
+	err = os.WriteFile(filename, bytes, 0644)
 	if err != nil {
 		return fmt.Errorf("Could not open file '%s' to write data: %v", filename, err)
 	}

@@ -22,7 +22,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -75,7 +74,7 @@ func init() {
 func writeTemplateFile(filename string) error {
 	// create template file if it doesn't exist
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		err := ioutil.WriteFile(filename, []byte(baseTemplateFileString), 0644)
+		err := os.WriteFile(filename, []byte(baseTemplateFileString), 0644)
 		if err != nil {
 			return fmt.Errorf("Failed to create template file: %v\n", err)
 		}

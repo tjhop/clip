@@ -22,7 +22,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -55,7 +54,7 @@ func showClipTemplate(filename string) error {
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
 		fmt.Printf("Couldn't find a clip template with the name: '%s'\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)))
 	} else {
-		buf, err := ioutil.ReadFile(filename)
+		buf, err := os.ReadFile(filename)
 		if err != nil {
 			return fmt.Errorf("Failed to read template file: %v\n", err)
 		}
