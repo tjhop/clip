@@ -28,13 +28,13 @@ import (
 )
 
 type TemplateFile struct {
-	Tags []string `yaml: "tags"`
+	Tags []string `yaml:"tags"`
 
 	Template struct {
-		Vars map[string]string `yaml: "vars"`
+		Vars map[string]string `yaml:"vars"`
 
-		Text string `yaml: "text"`
-	} `yaml: "template"`
+		Text string `yaml:"text"`
+	} `yaml:"template"`
 }
 
 func LoadTemplateFile(filename string) (TemplateFile, error) {
