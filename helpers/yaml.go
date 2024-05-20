@@ -21,47 +21,47 @@
 package helpers
 
 import (
-    "fmt"
-    "io/ioutil"
+	"fmt"
+	"io/ioutil"
 
-    "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 )
 
 type TemplateFile struct {
-    Tags []string `yaml: "tags"`
+	Tags []string `yaml: "tags"`
 
-    Template struct {
-        Vars map[string]string `yaml: "vars"`
+	Template struct {
+		Vars map[string]string `yaml: "vars"`
 
-        Text string `yaml: "text"`
-    } `yaml: "template"`
+		Text string `yaml: "text"`
+	} `yaml: "template"`
 }
 
 func LoadTemplateFile(filename string) (TemplateFile, error) {
-    bytes, err := ioutil.ReadFile(filename)
-    if err != nil {
-        return TemplateFile{}, err
-    }
+	bytes, err := ioutil.ReadFile(filename)
+	if err != nil {
+		return TemplateFile{}, err
+	}
 
-    var tmpl TemplateFile
-    err = yaml.Unmarshal(bytes, &tmpl)
-    if err != nil {
-        return TemplateFile{}, err
-    }
+	var tmpl TemplateFile
+	err = yaml.Unmarshal(bytes, &tmpl)
+	if err != nil {
+		return TemplateFile{}, err
+	}
 
-    return tmpl, nil
+	return tmpl, nil
 }
 
 func WriteConfigFile(filename string, data interface{}) error {
-    bytes, err := yaml.Marshal(data)
-    if err != nil {
-        return fmt.Errorf("Could not marshal data:\n%#v\n...to yaml: %v", data, err)
-    }
+	bytes, err := yaml.Marshal(data)
+	if err != nil {
+		return fmt.Errorf("Could not marshal data:\n%#v\n...to yaml: %v", data, err)
+	}
 
-    err = ioutil.WriteFile(filename, bytes, 0644)
-    if err != nil {
-        return fmt.Errorf("Could not open file '%s' to write data: %v", filename, err)
-    }
+	err = ioutil.WriteFile(filename, bytes, 0644)
+	if err != nil {
+		return fmt.Errorf("Could not open file '%s' to write data: %v", filename, err)
+	}
 
-    return nil
+	return nil
 }

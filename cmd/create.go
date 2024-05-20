@@ -21,18 +21,17 @@
 package cmd
 
 import (
-    "fmt"
-    "os"
-    "strings"
-    "path/filepath"
-    "io/ioutil"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"strings"
 
-    "github.com/spf13/cobra"
-    "github.com/spf13/viper"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-const baseTemplateFileString string =
-`# See README.md for detailed information
+const baseTemplateFileString string = `# See README.md for detailed information
 #
 # Example template:
 #
@@ -54,37 +53,37 @@ template:
 
 // createCmd represents the create command
 var createCmd = &cobra.Command{
-    Use:   "create <Clip template>",
-    Aliases: []string{"add", "make"},
-    Short: "Create a new Clip template",
-    Long: `Create a Clip template. Clip templates are YAML files with embedded Go templates and variables.
+	Use:     "create <Clip template>",
+	Aliases: []string{"add", "make"},
+	Short:   "Create a new Clip template",
+	Long: `Create a Clip template. Clip templates are YAML files with embedded Go templates and variables.
 `,
-    Args: cobra.ExactArgs(1),
-    Run: func(cmd *cobra.Command, args []string) {
-        templateFilename := filepath.Join(viper.GetString("templatedir"), os.Args[len(os.Args) - 1] + ".yml")
-        err := writeTemplateFile(templateFilename)
-        if err != nil {
-            fmt.Printf("Call to create template failed: %v\n", err)
-        }
-    },
+	Args: cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		templateFilename := filepath.Join(viper.GetString("templatedir"), os.Args[len(os.Args)-1]+".yml")
+		err := writeTemplateFile(templateFilename)
+		if err != nil {
+			fmt.Printf("Call to create template failed: %v\n", err)
+		}
+	},
 }
 
 func init() {
-    rootCmd.AddCommand(createCmd)
+	rootCmd.AddCommand(createCmd)
 }
 
 func writeTemplateFile(filename string) error {
-    // create template file if it doesn't exist
-    if _, err := os.Stat(filename); os.IsNotExist(err) {
-        err := ioutil.WriteFile(filename, []byte(baseTemplateFileString), 0644)
-        if err != nil {
-            return fmt.Errorf("Failed to create template file: %v\n", err)
-        }
+	// create template file if it doesn't exist
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+		err := ioutil.WriteFile(filename, []byte(baseTemplateFileString), 0644)
+		if err != nil {
+			return fmt.Errorf("Failed to create template file: %v\n", err)
+		}
 
-        fmt.Printf("Clip template '%s' created\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)))
-    } else {
-        fmt.Printf("A Clip template with the name '%s' already exists\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)))
-    }
+		fmt.Printf("Clip template '%s' created\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)))
+	} else {
+		fmt.Printf("A Clip template with the name '%s' already exists\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)))
+	}
 
-    return nil
+	return nil
 }

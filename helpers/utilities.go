@@ -21,16 +21,16 @@
 package helpers
 
 import (
-    "strings"
+	"strings"
 )
 
 // helper function to check if a string exists in a slice
 func Contains(slice []string, str string) bool {
-    for _, sliceString := range slice {
-        if str == sliceString || strings.Contains(sliceString, str) {
-            return true
-        }
-    }
+	for _, sliceString := range slice {
+		if str == sliceString || strings.Contains(sliceString, str) {
+			return true
+		}
+	}
 
-    return false
+	return false
 }

@@ -21,34 +21,34 @@
 package cmd
 
 import (
-    "fmt"
+	"fmt"
 
-    "github.com/spf13/cobra"
-    "github.com/atotto/clipboard"
+	"github.com/atotto/clipboard"
+	"github.com/spf13/cobra"
 )
 
 var pasteCmd = &cobra.Command{
-    Use:   "paste",
-    Aliases: []string{"out", "print"},
-    Short: "Print clipboard contents to stdout",
-    Run: func(cmd *cobra.Command, args []string) {
-        err := writeClipboardToStdout()
-        if err != nil {
-            fmt.Printf("Call to print clipboard contents failed: %v\n", err)
-        }
-    },
+	Use:     "paste",
+	Aliases: []string{"out", "print"},
+	Short:   "Print clipboard contents to stdout",
+	Run: func(cmd *cobra.Command, args []string) {
+		err := writeClipboardToStdout()
+		if err != nil {
+			fmt.Printf("Call to print clipboard contents failed: %v\n", err)
+		}
+	},
 }
 
 func init() {
-    rootCmd.AddCommand(pasteCmd)
+	rootCmd.AddCommand(pasteCmd)
 }
 
 func writeClipboardToStdout() error {
-    str, err := clipboard.ReadAll()
-    if err != nil {
-        return fmt.Errorf("Failed to dump clipboard contents to variable: %v\n", err)
-    }
+	str, err := clipboard.ReadAll()
+	if err != nil {
+		return fmt.Errorf("Failed to dump clipboard contents to variable: %v\n", err)
+	}
 
-    fmt.Println(str)
-    return nil
+	fmt.Println(str)
+	return nil
 }

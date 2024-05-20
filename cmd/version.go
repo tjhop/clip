@@ -21,27 +21,27 @@
 package cmd
 
 import (
-    "fmt"
+	"fmt"
 
-    "github.com/spf13/cobra"
+	"github.com/spf13/cobra"
 )
 
 var (
-    // These vars will be set by the linker during build time
-    version     string
-    commit      string
-    builddate   string
+	// These vars will be set by the linker during build time
+	version   string
+	commit    string
+	builddate string
 )
 
 var versionCmd = &cobra.Command{
-    Use:   "version",
-    Short: "Print Clip build info",
-    Long: `Print Clip build info`,
-    Run: func(cmd *cobra.Command, args []string) {
-        fmt.Printf("clip %s (%s) [built %s]\n", version, commit, builddate)
-    },
+	Use:   "version",
+	Short: "Print Clip build info",
+	Long:  `Print Clip build info`,
+	Run: func(cmd *cobra.Command, args []string) {
+		fmt.Printf("clip %s (%s) [built %s]\n", version, commit, builddate)
+	},
 }
 
 func init() {
-    rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(versionCmd)
 }

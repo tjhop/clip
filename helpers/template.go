@@ -21,31 +21,31 @@
 package helpers
 
 import (
-    "bytes"
-    "fmt"
-    "text/template"
+	"bytes"
+	"fmt"
+	"text/template"
 
-    "github.com/spf13/viper"
+	"github.com/spf13/viper"
 )
 
 func ExecuteTemplate(tmpl TemplateFile) (string, error) {
-    var gotmpl bytes.Buffer
-    varmap := make(map[string]string)
+	var gotmpl bytes.Buffer
+	varmap := make(map[string]string)
 
-    // add default variables from config file to varmap
-    for k, v := range viper.GetStringMapString("vars") {
-        varmap[k] = v
-    }
-    // merge template vars to default vars from config file
-    for k, v := range tmpl.Template.Vars {
-        varmap[k] = v
-    }
+	// add default variables from config file to varmap
+	for k, v := range viper.GetStringMapString("vars") {
+		varmap[k] = v
+	}
+	// merge template vars to default vars from config file
+	for k, v := range tmpl.Template.Vars {
+		varmap[k] = v
+	}
 
-    t := template.Must(template.New("Clip Template").Parse(tmpl.Template.Text))
-    err := t.Execute(&gotmpl, varmap)
-    if err != nil {
-        return "", fmt.Errorf("Failed to execute template: %v\n", err)
-    }
+	t := template.Must(template.New("Clip Template").Parse(tmpl.Template.Text))
+	err := t.Execute(&gotmpl, varmap)
+	if err != nil {
+		return "", fmt.Errorf("Failed to execute template: %v\n", err)
+	}
 
-    return gotmpl.String(), nil
+	return gotmpl.String(), nil
 }

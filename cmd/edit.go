@@ -21,24 +21,24 @@
 package cmd
 
 import (
-    "fmt"
-    "os"
-    "os/exec"
-    "strings"
-    "path/filepath"
+	"fmt"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
 
-    "github.com/spf13/cobra"
-    "github.com/spf13/viper"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var (
-    editor string
+	editor string
 )
 
 var editCmd = &cobra.Command{
-    Use:   "edit <Clip template>",
-    Short: "Open Clip template in text editor",
-    Long: `Open Clip template in text editor.
+	Use:   "edit <Clip template>",
+	Short: "Open Clip template in text editor",
+	Long: `Open Clip template in text editor.
 
 Clip will check the following locations for the editor to use:
   Clip config file
@@ -46,56 +46,56 @@ Clip will check the following locations for the editor to use:
   $EDITOR environment variable
   Default (nano)
 `,
-    Args: cobra.ExactArgs(1),
-    Run: func(cmd *cobra.Command, args []string) {
-        templateFilename := filepath.Join(viper.GetString("templatedir"), os.Args[len(os.Args) - 1] + ".yml")
-        err := openClipTemplateInEditor(templateFilename)
-        if err != nil {
-            fmt.Printf("Failed to open Clip template for editing: %v\n", err)
-        }
-    },
+	Args: cobra.ExactArgs(1),
+	Run: func(cmd *cobra.Command, args []string) {
+		templateFilename := filepath.Join(viper.GetString("templatedir"), os.Args[len(os.Args)-1]+".yml")
+		err := openClipTemplateInEditor(templateFilename)
+		if err != nil {
+			fmt.Printf("Failed to open Clip template for editing: %v\n", err)
+		}
+	},
 }
 
 func init() {
-    rootCmd.AddCommand(editCmd)
+	rootCmd.AddCommand(editCmd)
 
-    // command Line flags
-    editCmd.Flags().StringVarP(&editor, "editor", "e", "", "location of template directory (default is $HOME/clip)")
+	// command Line flags
+	editCmd.Flags().StringVarP(&editor, "editor", "e", "", "location of template directory (default is $HOME/clip)")
 
-    // use viper to bind config to CLI flags
-    viper.BindPFlag("editor", editCmd.Flags().Lookup("editor"))
+	// use viper to bind config to CLI flags
+	viper.BindPFlag("editor", editCmd.Flags().Lookup("editor"))
 }
 
 func openClipTemplateInEditor(filename string) error {
-    var editor string
+	var editor string
 
-    // check if clip template exists yet. if it doesn't, make it
-    if _, err := os.Stat(filename); os.IsNotExist(err) {
-        err = writeTemplateFile(filename)
-        if err != nil {
-            return fmt.Errorf("Call to create Clip template file failed: %v\n", err)
-        }
-    }
+	// check if clip template exists yet. if it doesn't, make it
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+		err = writeTemplateFile(filename)
+		if err != nil {
+			return fmt.Errorf("Call to create Clip template file failed: %v\n", err)
+		}
+	}
 
-    if viper.GetString("editor") != "" {
-        editor = viper.GetString("editor")
-        _, err := exec.LookPath(editor)
-        if err != nil {
-            return fmt.Errorf("Could not find an editor named '%s' in your PATH: %v\n", editor, err)
-        }
-    } else {
-        return fmt.Errorf("No editor defined!")
-    }
+	if viper.GetString("editor") != "" {
+		editor = viper.GetString("editor")
+		_, err := exec.LookPath(editor)
+		if err != nil {
+			return fmt.Errorf("Could not find an editor named '%s' in your PATH: %v\n", editor, err)
+		}
+	} else {
+		return fmt.Errorf("No editor defined!")
+	}
 
-    // build command to run
-    cmd := exec.Command(editor, filename)
-    cmd.Stdin = os.Stdin
-    cmd.Stdout = os.Stdout
-    cmd.Stderr = os.Stderr
-    err := cmd.Run()
-    if err != nil {
-        return fmt.Errorf("Failed to open Clip template '%s' in %s: %v\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)), editor, err)
-    }
+	// build command to run
+	cmd := exec.Command(editor, filename)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	err := cmd.Run()
+	if err != nil {
+		return fmt.Errorf("Failed to open Clip template '%s' in %s: %v\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)), editor, err)
+	}
 
-    return nil
+	return nil
 }
