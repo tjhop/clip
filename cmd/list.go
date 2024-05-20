@@ -64,7 +64,7 @@ func init() {
 }
 
 func list() {
-	if tagsOnly == true {
+	if tagsOnly {
 		err := listTemplateTags(viper.GetString("templatedir"))
 		if err != nil {
 			fmt.Printf("Call to list Clip template tags failed: %v\n", err)
