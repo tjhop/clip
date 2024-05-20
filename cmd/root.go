@@ -22,6 +22,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -84,7 +85,9 @@ func init() {
 	rootCmd.Flags().BoolVarP(&showBuild, "version", "v", false, "clip version and build info")
 
 	// use viper to bind config to CLI flags
-	viper.BindPFlag("templatedir", rootCmd.PersistentFlags().Lookup("templatedir"))
+	if err := viper.BindPFlag("templatedir", rootCmd.PersistentFlags().Lookup("templatedir")); err != nil {
+		log.Fatal("Failed to bind `templatedir` flag")
+	}
 }
 
 // initClip will set config defaults, read in config file, and initialize clip template directory if it doesn't exist yet

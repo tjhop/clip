@@ -22,6 +22,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -63,7 +64,9 @@ func init() {
 	editCmd.Flags().StringVarP(&editor, "editor", "e", "", "location of template directory (default is $HOME/clip)")
 
 	// use viper to bind config to CLI flags
-	viper.BindPFlag("editor", editCmd.Flags().Lookup("editor"))
+	if err := viper.BindPFlag("editor", editCmd.Flags().Lookup("editor")); err != nil {
+		log.Fatal("Failed to bind `editor` flag")
+	}
 }
 
 func openClipTemplateInEditor(filename string) error {
