@@ -22,7 +22,7 @@ archives:
 checksum:
   name_template: 'checksums.txt'
 snapshot:
-  name_template: "{{ .Tag }}-next"
+  name_template: "{{ incpatch .Version }}-next"
 nfpms:
   - package_name: 'clip'
     homepage: 'https://github.com/tjhop/clip'
