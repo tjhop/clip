@@ -1,6 +1,6 @@
 module github.com/tjhop/clip
 
-go 1.17
+go 1.22.3
 
 require (
 	github.com/atotto/clipboard v0.1.4
