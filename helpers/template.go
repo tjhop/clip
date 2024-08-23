@@ -25,6 +25,24 @@ import (
 	"fmt"
 	"text/template"
 
+	"github.com/go-sprout/sprout"
+	"github.com/go-sprout/sprout/registry/checksum"
+	"github.com/go-sprout/sprout/registry/conversion"
+	"github.com/go-sprout/sprout/registry/crypto"
+	"github.com/go-sprout/sprout/registry/encoding"
+	"github.com/go-sprout/sprout/registry/env"
+	"github.com/go-sprout/sprout/registry/filesystem"
+	"github.com/go-sprout/sprout/registry/maps"
+	"github.com/go-sprout/sprout/registry/numeric"
+	"github.com/go-sprout/sprout/registry/random"
+	"github.com/go-sprout/sprout/registry/reflect"
+	"github.com/go-sprout/sprout/registry/regexp"
+	"github.com/go-sprout/sprout/registry/semver"
+	"github.com/go-sprout/sprout/registry/slices"
+	"github.com/go-sprout/sprout/registry/std"
+	"github.com/go-sprout/sprout/registry/strings"
+	"github.com/go-sprout/sprout/registry/time"
+	"github.com/go-sprout/sprout/registry/uniqueid"
 	"github.com/spf13/viper"
 )
 
@@ -41,7 +59,30 @@ func ExecuteTemplate(tmpl TemplateFile) (string, error) {
 		varmap[k] = v
 	}
 
-	t := template.Must(template.New("Clip Template").Parse(tmpl.Template.Text))
+	handler := sprout.New()
+	if err := handler.AddRegistries(
+		checksum.NewRegistry(),
+		conversion.NewRegistry(),
+		crypto.NewRegistry(),
+		encoding.NewRegistry(),
+		env.NewRegistry(),
+		filesystem.NewRegistry(),
+		maps.NewRegistry(),
+		numeric.NewRegistry(),
+		random.NewRegistry(),
+		reflect.NewRegistry(),
+		regexp.NewRegistry(),
+		semver.NewRegistry(),
+		slices.NewRegistry(),
+		std.NewRegistry(),
+		strings.NewRegistry(),
+		time.NewRegistry(),
+		uniqueid.NewRegistry(),
+	); err != nil {
+		return "", fmt.Errorf("Failed to add sprout registries to handler: %s\n", err.Error())
+	}
+
+	t := template.Must(template.New("Clip Template").Funcs(handler.Build()).Parse(tmpl.Template.Text))
 	err := t.Execute(&gotmpl, varmap)
 	if err != nil {
 		return "", fmt.Errorf("Failed to execute template: %v\n", err)
