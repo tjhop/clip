@@ -35,6 +35,10 @@ nfpms:
     contents:
       - src: ./README.md
         dst: /usr/share/doc/tjhop/clip/README.md
+archives:
+  - files:
+    - LICENSE*
+    - README*
 changelog:
   sort: asc
   filters:
