@@ -14,6 +14,9 @@ builds:
       - -X github.com/tjhop/clip/cmd.version={{ .Version }}
       - -X github.com/tjhop/clip/cmd.commit={{ .Commit }}
     binary: clip
+gomod:
+  proxy: true
+  mod: mod
 checksum:
   name_template: 'checksums.txt'
 snapshot:
