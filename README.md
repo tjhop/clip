@@ -56,6 +56,8 @@ Template configuration can be done almost entirely through the `clip` CLI and it
 ## Templates
 Clip templates are YAML files with [Golang templated](https://golang.org/pkg/text/template/) text snippets and variables to use for substitutions in the template. Templates exist in a directory managed by Clip. By default, the template directory is `$HOME/clip/`, but this can be changed by editing the `templatedir` setting in the config file or passing the `--templatedir` flag at runtime.
 
+Clip also imports the [sprout template function library](https://docs.atom.codes/sprout) and loads functions from all registries _except the `backward` registry which contains deprecated functions_.
+
 The base template that gets created is pretty simple:
 ```yml
 # See README.md for detailed information
@@ -125,6 +127,23 @@ More info can be found using the `--help` flag on any of the subcommands, too.
 
 Have fun!
 tjhop
+```
+
+Example template interaction using functions from sprout:
+```shell
+# 'env' and 'default' are functions from sprout
+~ -> clip show demo
+template:
+  text: |
+    Hello, {{ env "NAME" | default "Name unset" }}!
+
+~ -> clip copy demo
+~ -> clip paste
+Hello, Name unset!
+
+~ -> NAME="McLovin" clip copy demo
+~ -> clip paste
+Hello, McLovin!
 ```
 
 ## Building
