@@ -1,5 +1,10 @@
 # Clip - A Templated Clipboard Manager
 
+[![license](https://img.shields.io/github/license/tjhop/clip)](https://github.com/tjhop/clip/blob/master/LICENSE)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tjhop/clip)](https://goreportcard.com/report/github.com/tjhop/clip)
+[![Latest Release](https://img.shields.io/github/v/release/tjhop/clip)](https://github.com/tjhop/clip/releases/latest)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/tjhop/clip/total)
+
 ## Overview
 Clip is a CLI tool to let you manage templates and copy them to your clipboard so you can easily paste them into other forms or software. Clip templates can be templated using [Go templates](https://golang.org/pkg/text/template/), and they can be assigned tags to organize and filter your templates. Variables to be used in the templates can be either embedded directly into the template or put into the `clip` config file so they're available to all templates. Examples of the [config file](#Configuration) and [template files](#Templates) can be found below.
 
