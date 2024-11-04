@@ -155,14 +155,18 @@ Hello, McLovin!
 ### Binaries
 Binaries are built by [goreleaser and github actions](https://goreleaser.com/ci/actions/). Please see [Releases](#Releases) for more information on building binaries for release.
 
-For testing purposes, binaries can be built manually, as well:
-    ```shell
-    COMMIT=$(git rev-parse --short HEAD);
-    TAG=$(git describe --always --tags --abbrev=0 | tr -d "[v\r\n]");
-    go build -o clip -ldflags="-X github.com/tjhop/clip/cmd.builddate=$(date --iso-8601=seconds)
-        -X github.com/tjhop/clip/cmd.version=$TAG
-        -X github.com/tjhop/clip/cmd.commit=$COMMIT"
-    ```
+For local development, binaries can be built with the included Makefile:
+
+```bash
+~/go/src/github.com/tjhop/clip (master [  ]) -> make
+# autogenerate help messages for comment lines with 2 `#`
+ help:                  print this help message
+ tidy:                  tidy modules
+ fmt:                   apply go code style formatter
+ lint:                  run linters
+ binary:                build a binary
+ build:                 alias for `binary`
+```
 
 ### Releases
 Releases are handled by [goreleaser and github actions](https://goreleaser.com/ci/actions/).
