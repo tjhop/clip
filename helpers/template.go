@@ -79,13 +79,13 @@ func ExecuteTemplate(tmpl TemplateFile) (string, error) {
 		time.NewRegistry(),
 		uniqueid.NewRegistry(),
 	); err != nil {
-		return "", fmt.Errorf("Failed to add sprout registries to handler: %s\n", err.Error())
+		return "", fmt.Errorf("failed to add sprout registries to handler: %w", err)
 	}
 
 	t := template.Must(template.New("Clip Template").Funcs(handler.Build()).Parse(tmpl.Template.Text))
 	err := t.Execute(&gotmpl, varmap)
 	if err != nil {
-		return "", fmt.Errorf("Failed to execute template: %v\n", err)
+		return "", fmt.Errorf("failed to execute template: %w", err)
 	}
 
 	return gotmpl.String(), nil

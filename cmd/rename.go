@@ -65,7 +65,7 @@ func renameTemplateFile(sourceFilename, destinationFilename string) error {
 
 	err := os.Rename(sourceFilename, destinationFilename)
 	if err != nil {
-		return fmt.Errorf("Failed to rename clip template file: %v\n", err)
+		return fmt.Errorf("failed to rename clip template file: %w", err)
 	}
 
 	return nil

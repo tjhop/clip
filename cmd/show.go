@@ -56,7 +56,7 @@ func showClipTemplate(filename string) error {
 	} else {
 		buf, err := os.ReadFile(filename)
 		if err != nil {
-			return fmt.Errorf("Failed to read template file: %v\n", err)
+			return fmt.Errorf("failed to read template file: %w", err)
 		}
 
 		fmt.Println(string(buf))

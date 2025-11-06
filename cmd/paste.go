@@ -46,7 +46,7 @@ func init() {
 func writeClipboardToStdout() error {
 	str, err := clipboard.ReadAll()
 	if err != nil {
-		return fmt.Errorf("Failed to dump clipboard contents to variable: %v\n", err)
+		return fmt.Errorf("failed to dump clipboard contents to variable: %w", err)
 	}
 
 	fmt.Println(str)
