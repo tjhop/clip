@@ -21,6 +21,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -76,7 +77,7 @@ func openClipTemplateInEditor(filename string) error {
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
 		err = writeTemplateFile(filename)
 		if err != nil {
-			return fmt.Errorf("Call to create Clip template file failed: %v\n", err)
+			return fmt.Errorf("call to create Clip template file failed: %w", err)
 		}
 	}
 
@@ -84,10 +85,10 @@ func openClipTemplateInEditor(filename string) error {
 		editor = viper.GetString("editor")
 		_, err := exec.LookPath(editor)
 		if err != nil {
-			return fmt.Errorf("Could not find an editor named '%s' in your PATH: %v\n", editor, err)
+			return fmt.Errorf("could not find an editor named '%s' in your PATH: %w", editor, err)
 		}
 	} else {
-		return fmt.Errorf("No editor defined!")
+		return errors.New("no editor defined")
 	}
 
 	// build command to run
@@ -97,7 +98,7 @@ func openClipTemplateInEditor(filename string) error {
 	cmd.Stderr = os.Stderr
 	err := cmd.Run()
 	if err != nil {
-		return fmt.Errorf("Failed to open Clip template '%s' in %s: %v\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)), editor, err)
+		return fmt.Errorf("failed to open Clip template '%s' in %s: %w", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)), editor, err)
 	}
 
 	return nil

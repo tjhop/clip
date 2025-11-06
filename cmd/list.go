@@ -90,7 +90,7 @@ func listTemplates(dir string) error {
 				for _, tag := range tags {
 					tmpl, err := helpers.LoadTemplateFile(filepath.Join(dir, info.Name()))
 					if err != nil {
-						return fmt.Errorf("Couldn't load Clip template '%s' to check for tags: %v\n", filenameWithoutExtension, err)
+						return fmt.Errorf("couldn't load Clip template '%s' to check for tags: %w", filenameWithoutExtension, err)
 					}
 
 					if helpers.Contains(tmpl.Tags, tag) && !helpers.Contains(files, filenameWithoutExtension) {
@@ -105,7 +105,7 @@ func listTemplates(dir string) error {
 	})
 
 	if err != nil {
-		return fmt.Errorf("Failed to walk template directory: %v\n", err)
+		return fmt.Errorf("failed to walk template directory: %w", err)
 	}
 
 	for _, file := range files {
@@ -123,7 +123,7 @@ func listTemplateTags(dir string) error {
 		if !info.IsDir() && (filepath.Ext(path) == ".yaml" || filepath.Ext(path) == ".yml") {
 			tmpl, err := helpers.LoadTemplateFile(filepath.Join(dir, info.Name()))
 			if err != nil {
-				return fmt.Errorf("Couldn't load Clip template to check for tags: %v\n", err)
+				return fmt.Errorf("couldn't load Clip template to check for tags: %w", err)
 			}
 
 			for _, tag := range tmpl.Tags {
@@ -136,7 +136,7 @@ func listTemplateTags(dir string) error {
 	})
 
 	if err != nil {
-		return fmt.Errorf("Failed to walk template directory: %v\n", err)
+		return fmt.Errorf("failed to walk template directory: %w", err)
 	}
 
 	sort.Strings(tags)

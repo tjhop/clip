@@ -57,7 +57,7 @@ func removeTemplateFile(filename string) error {
 	} else {
 		err := os.Remove(filename)
 		if err != nil {
-			return fmt.Errorf("Failed to remove Clip template file: %v\n", err)
+			return fmt.Errorf("failed to remove Clip template file: %w", err)
 		}
 
 		fmt.Printf("Clip template '%s' removed\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)))

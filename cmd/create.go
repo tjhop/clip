@@ -76,7 +76,7 @@ func writeTemplateFile(filename string) error {
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
 		err := os.WriteFile(filename, []byte(baseTemplateFileString), 0644)
 		if err != nil {
-			return fmt.Errorf("Failed to create template file: %v\n", err)
+			return fmt.Errorf("failed to create template file: %w", err)
 		}
 
 		fmt.Printf("Clip template '%s' created\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)))

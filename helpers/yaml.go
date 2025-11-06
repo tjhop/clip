@@ -55,12 +55,12 @@ func LoadTemplateFile(filename string) (TemplateFile, error) {
 func WriteConfigFile(filename string, data interface{}) error {
 	bytes, err := yaml.Marshal(data)
 	if err != nil {
-		return fmt.Errorf("Could not marshal data:\n%#v\n...to yaml: %v", data, err)
+		return fmt.Errorf("could not marshal data:<%#v>...to yaml: %w", data, err)
 	}
 
 	err = os.WriteFile(filename, bytes, 0644)
 	if err != nil {
-		return fmt.Errorf("Could not open file '%s' to write data: %v", filename, err)
+		return fmt.Errorf("could not open file '%s' to write data: %w", filename, err)
 	}
 
 	return nil

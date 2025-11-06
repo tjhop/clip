@@ -63,17 +63,17 @@ func init() {
 func writeClipTemplateToClipboard(filename string) error {
 	tmpl, err := helpers.LoadTemplateFile(filename)
 	if err != nil {
-		return fmt.Errorf("Couldn't load Clip template file '%s': %v\n", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)), err)
+		return fmt.Errorf("couldn't load Clip template file '%s': %w", strings.TrimSuffix(filepath.Base(filename), filepath.Ext(filename)), err)
 	}
 
 	renderedTemplateString, err := helpers.ExecuteTemplate(tmpl)
 	if err != nil {
-		return fmt.Errorf("Failed to render Go Template: %v\n", err)
+		return fmt.Errorf("failed to render Go Template: %w", err)
 	}
 
 	err = clipboard.WriteAll(renderedTemplateString)
 	if err != nil {
-		return fmt.Errorf("Failed to write Clip template to clipboard: %v\n", err)
+		return fmt.Errorf("failed to write Clip template to clipboard: %w", err)
 	}
 
 	return nil
@@ -96,12 +96,12 @@ func writeStdinToClipboard() error {
 		}
 
 		if scanner.Err() != nil {
-			return fmt.Errorf("Failed to read data from stdin: %v\n", err)
+			return fmt.Errorf("failed to read data from stdin: %w", err)
 		}
 
 		err := clipboard.WriteAll(strings.Join(output, "\n"))
 		if err != nil {
-			return fmt.Errorf("Failed to write data from stdin to clipboard: %v\n", err)
+			return fmt.Errorf("failed to write data from stdin to clipboard: %w", err)
 		}
 	}
 
