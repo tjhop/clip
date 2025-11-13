@@ -21,8 +21,8 @@
 package cmd
 
 import (
-	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -80,29 +80,14 @@ func writeClipTemplateToClipboard(filename string) error {
 }
 
 func writeStdinToClipboard() error {
-	info, err := os.Stdin.Stat()
+	input, err := io.ReadAll(os.Stdin)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("error reading from stdin: %w", err)
 	}
 
-	if info.Mode()&os.ModeCharDevice == os.ModeCharDevice {
-		fmt.Println("Invalid input device for stdin")
-	} else {
-		scanner := bufio.NewScanner(os.Stdin)
-		var output []string
-
-		for scanner.Scan() {
-			output = append(output, scanner.Text())
-		}
-
-		if scanner.Err() != nil {
-			return fmt.Errorf("failed to read data from stdin: %w", err)
-		}
-
-		err := clipboard.WriteAll(strings.Join(output, "\n"))
-		if err != nil {
-			return fmt.Errorf("failed to write data from stdin to clipboard: %w", err)
-		}
+	err = clipboard.WriteAll(string(input))
+	if err != nil {
+		return fmt.Errorf("failed to write data from stdin to clipboard: %w", err)
 	}
 
 	return nil
