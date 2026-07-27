@@ -18,50 +18,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package helpers
+package cli
 
 import (
 	"fmt"
 	"os"
 
-	"gopkg.in/yaml.v3"
+	"github.com/alecthomas/kingpin/v2"
+
+	"github.com/tjhop/clip/internal/config"
 )
 
-type TemplateFile struct {
-	Tags []string `yaml:"tags"`
+var (
+	removeCmdName  string
+	removeTemplate string
+)
 
-	Template struct {
-		Vars map[string]string `yaml:"vars"`
-
-		Text string `yaml:"text"`
-	} `yaml:"template"`
+func registerRemoveCmd(app *kingpin.Application) {
+	cmd := app.Command("remove", "Remove a Clip template.").Alias("delete")
+	cmd.HelpLong("Delete a Clip template from your template folder.")
+	cmd.Arg("template", "Name of the Clip template to remove.").Required().StringVar(&removeTemplate)
+	removeCmdName = cmd.FullCommand()
 }
 
-func LoadTemplateFile(filename string) (TemplateFile, error) {
-	bytes, err := os.ReadFile(filename)
+func runRemove(cfg config.Config) error {
+	path, err := findTemplate(cfg.TemplateDir, removeTemplate)
 	if err != nil {
-		return TemplateFile{}, err
+		return err
 	}
 
-	var tmpl TemplateFile
-	err = yaml.Unmarshal(bytes, &tmpl)
-	if err != nil {
-		return TemplateFile{}, err
+	if err := os.Remove(path); err != nil {
+		return fmt.Errorf("could not remove Clip template '%s': %w", removeTemplate, err)
 	}
 
-	return tmpl, nil
-}
-
-func WriteConfigFile(filename string, data interface{}) error {
-	bytes, err := yaml.Marshal(data)
-	if err != nil {
-		return fmt.Errorf("could not marshal data:<%#v>...to yaml: %w", data, err)
-	}
-
-	err = os.WriteFile(filename, bytes, 0644)
-	if err != nil {
-		return fmt.Errorf("could not open file '%s' to write data: %w", filename, err)
-	}
-
+	fmt.Printf("Clip template '%s' removed\n", removeTemplate)
 	return nil
 }

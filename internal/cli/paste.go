@@ -18,10 +18,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package main
+package cli
 
-import "github.com/tjhop/clip/cmd"
+import (
+	"fmt"
 
-func main() {
-	cmd.Execute()
+	"github.com/alecthomas/kingpin/v2"
+	"github.com/atotto/clipboard"
+)
+
+var pasteCmdName string
+
+func registerPasteCmd(app *kingpin.Application) {
+	cmd := app.Command("paste", "Print clipboard contents to stdout.").Alias("out").Alias("print")
+	pasteCmdName = cmd.FullCommand()
+}
+
+func runPaste() error {
+	contents, err := clipboard.ReadAll()
+	if err != nil {
+		return fmt.Errorf("could not read clipboard: %w", err)
+	}
+
+	fmt.Println(contents)
+	return nil
 }

@@ -1,7 +1,8 @@
 version: 2
 
 builds:
-  - env:
+  - main: ./cmd/clip
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
@@ -10,9 +11,9 @@ builds:
     goarch:
       - amd64
     ldflags:
-      - -X github.com/tjhop/clip/cmd.builddate={{ .CommitDate }}
-      - -X github.com/tjhop/clip/cmd.version={{ .Version }}
-      - -X github.com/tjhop/clip/cmd.commit={{ .Commit }}
+      - -X github.com/tjhop/clip/internal/version.BuildDate={{ .CommitDate }}
+      - -X github.com/tjhop/clip/internal/version.Version={{ .Version }}
+      - -X github.com/tjhop/clip/internal/version.Commit={{ .Commit }}
     binary: clip
 gomod:
   proxy: true

@@ -18,30 +18,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+// Package main is the clip command line tool.
+package main
 
 import (
-	"fmt"
+	"os"
 
-	"github.com/spf13/cobra"
+	"github.com/alecthomas/kingpin/v2"
+
+	"github.com/tjhop/clip/internal/cli"
 )
 
-var (
-	// These vars will be set by the linker during build time
-	version   string
-	commit    string
-	builddate string
-)
+func main() {
+	app := cli.NewApp()
 
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "Print Clip build info",
-	Long:  `Print Clip build info`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("clip %s (%s) [built %s]\n", version, commit, builddate)
-	},
-}
+	// nilaway thinks os.Args can be nil.
+	args := os.Args
+	if len(args) > 0 {
+		args = args[1:]
+	}
+	cmdName := kingpin.MustParse(app.Parse(cli.CompletionArgs(args)))
 
-func init() {
-	rootCmd.AddCommand(versionCmd)
+	if err := cli.Run(cmdName); err != nil {
+		// Same "clip: error:" prefix as kingpin's own parse errors.
+		app.Fatalf("%v", err)
+	}
 }

@@ -18,37 +18,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package cmd
+package cli
 
 import (
 	"fmt"
+	"os"
 
-	"github.com/atotto/clipboard"
-	"github.com/spf13/cobra"
+	"github.com/alecthomas/kingpin/v2"
+
+	"github.com/tjhop/clip/internal/config"
 )
 
-var pasteCmd = &cobra.Command{
-	Use:     "paste",
-	Aliases: []string{"out", "print"},
-	Short:   "Print clipboard contents to stdout",
-	Run: func(cmd *cobra.Command, args []string) {
-		err := writeClipboardToStdout()
-		if err != nil {
-			fmt.Printf("Call to print clipboard contents failed: %v\n", err)
-		}
-	},
+var (
+	showCmdName  string
+	showTemplate string
+)
+
+func registerShowCmd(app *kingpin.Application) {
+	cmd := app.Command("show", "Show the raw Clip template file.").Alias("cat").Alias("dump")
+	cmd.HelpLong("Show the output of the raw clip template file (pretty much just cat the file).")
+	cmd.Arg("template", "Name of the Clip template to show.").Required().StringVar(&showTemplate)
+	showCmdName = cmd.FullCommand()
 }
 
-func init() {
-	rootCmd.AddCommand(pasteCmd)
-}
-
-func writeClipboardToStdout() error {
-	str, err := clipboard.ReadAll()
+func runShow(cfg config.Config) error {
+	path, err := findTemplate(cfg.TemplateDir, showTemplate)
 	if err != nil {
-		return fmt.Errorf("failed to dump clipboard contents to variable: %w", err)
+		return err
 	}
 
-	fmt.Println(str)
-	return nil
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return fmt.Errorf("could not read Clip template '%s': %w", showTemplate, err)
+	}
+
+	_, err = os.Stdout.Write(data)
+	return err
 }

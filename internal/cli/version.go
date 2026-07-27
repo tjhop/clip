@@ -18,19 +18,24 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-package helpers
+package cli
 
 import (
-	"strings"
+	"fmt"
+
+	"github.com/alecthomas/kingpin/v2"
+
+	"github.com/tjhop/clip/internal/version"
 )
 
-// helper function to check if a string exists in a slice
-func Contains(slice []string, str string) bool {
-	for _, sliceString := range slice {
-		if str == sliceString || strings.Contains(sliceString, str) {
-			return true
-		}
-	}
+var versionCmdName string
 
-	return false
+func registerVersionCmd(app *kingpin.Application) {
+	cmd := app.Command("version", "Print Clip build info.")
+	versionCmdName = cmd.FullCommand()
+}
+
+func runVersion() error {
+	fmt.Println(version.Print(programName))
+	return nil
 }
