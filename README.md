@@ -9,57 +9,118 @@
 Clip is a CLI tool to let you manage templates and copy them to your clipboard so you can easily paste them into other forms or software. Clip templates can be templated using [Go templates](https://golang.org/pkg/text/template/), and they can be assigned tags to organize and filter your templates. Variables to be used in the templates can be either embedded directly into the template or put into the `clip` config file so they're available to all templates. Examples of the [config file](#Configuration) and [template files](#Templates) can be found below.
 
 ## Usage
-Clip has several subcommands available, which provide the ability to create and interact with clip templates as well as the system's clipboard. Several commands also have aliases registered, so, for instance, `clip add $test` is a valid alias for `clip create $test`.
+Clip has several subcommands available, which provide the ability to create and interact with clip templates as well as the system's clipboard. Several commands also have aliases registered, so, for instance, `clip add $test` is a valid alias for `clip create $test`:
 
-By default, if run without any subcommands or arguments, running `clip` will run the `clip list` subcommand to list available templates. If run with a single argument (ie, a clip template whose name is not registered as a subcommand), clip will run the `clip copy` command to copy the template.
+| Command | Aliases |
+| ------- | ------- |
+| `copy` | `load`, `in` |
+| `create` | `add`, `make` |
+| `paste` | `out`, `print` |
+| `remove` | `delete` |
+| `rename` | `move` |
+| `show` | `cat`, `dump` |
 
-You can view all available commands with `clip help`, as well as get help from each specific subcommand with `clip $command --help`:
+Running `clip` with no subcommand lists your templates (`clip list`). Copying a template is `clip copy <template>`.
+
+With no template argument, `clip copy` reads stdin until EOF and copies it verbatim, so `some-command | clip copy` works as an OS-agnostic clipboard pipe.
+
+You can view all available commands with `clip --help`, as well as get help from each specific subcommand with `clip $command --help`:
 ```shell
-~ $ clip help
-Clip is a CLI tool to build and manage templated snippets and
-interact with the systems's clipboard
+~ $ clip --help
+usage: clip [<flags>] <command> [<args> ...]
 
-Usage:
-  clip [flags]
-  clip [command]
+CLI tool to build and manage templated snippets and interact with the system's
+clipboard.
 
-Available Commands:
-  copy        Copy a Clip template to your clipboard (default if just running `clip $arg`)
-  create      Create a new Clip template
-  edit        Open Clip template in text editor
-  help        Help about any command
-  list        List available Clip templates/tags (default if just running `clip`)
-  paste       Print clipboard contents to stdout
-  remove      Remove a Clip template
-  rename      Rename a Clip template
-  show        Show the raw Clip template file
-  version     Print Clip build info
 
 Flags:
-      --config string        config file (default is $HOME/.clip.yml)
-  -h, --help                 help for clip
-  -t, --templatedir string   location of template directory (default is $HOME/clip)
-  -v, --version              clip version and build info
+  -h, --[no-]help      Show context-sensitive help (also try --help-long and
+                       --help-man).
+  -v, --[no-]version   Show application version.
+      --config=CONFIG  Path to clip config file (default is $HOME/.clip.yml).
+  -t, --template-dir=TEMPLATE-DIR
+                       Path to the clip template directory (default is
+                       $HOME/clip).
 
-Use "clip [command] --help" for more information about a command.
+Commands:
+help [<command>...]
+    Show help.
+
+copy [<template>]
+    Copy a Clip template/stdin to your clipboard.
+
+create <template>
+    Create a new Clip template.
+
+edit [<flags>] <template>
+    Open Clip template in text editor.
+
+list* [<flags>]
+    List available Clip templates/tags (default if just running `clip`).
+
+paste
+    Print clipboard contents to stdout.
+
+remove <template>
+    Remove a Clip template.
+
+rename <old> <new>
+    Rename a Clip template.
+
+show <template>
+    Show the raw Clip template file.
+
+version
+    Print Clip build info.
 ```
 
+The `--templatedir` spelling of the `--template-dir` flag is still accepted for backwards compatibility.
+
+### Shell Completion
+Clip can generate its own shell completion scripts:
+```shell
+# bash
+source <(clip --completion-script-bash)
+
+# zsh
+source <(clip --completion-script-zsh)
+```
+
+### Errors and exit status
+Every failure, including a missing template, is reported on stderr with exit status 1. First-run notices (config file and template directory creation) go to stderr as well, so whatever a command prints on stdout is safe to pipe.
+
 ## Configuration
-Clip uses a single configuration file (by default located at `$HOME/.clip.yml`). A basic config file will be created for you when you first run the command, but there are currently only 3 required keys:
+Clip uses a single configuration file, `$HOME/.clip.yml` by default (override it with `--config`). A commented scaffold is written there on first run if the file is missing. Every key is optional:
 ```yml
 editor: nano
-templatedir: /your/home/directory/clip
+
+# templatedir: ~/clip
+
 vars:
   name: Clip User
 ```
-Variables defined in the config file are global and available to all clip templates. If the variable is also defined in the template, the template version will override the global.
 
-Currently, you'll need to edit this config file directly to change these default values.
+| Key | Description |
+| --- | ----------- |
+| `editor` | Command used by `clip edit`. It may carry arguments, e.g. `code --wait`. |
+| `templatedir` | Directory your templates live in. A leading `~/` expands to your home directory. Left unset, it defaults to `$HOME/clip` on whichever machine runs clip, which keeps a config file synced between machines portable. |
+| `vars` | Global template variables, available to every template. A template's own `vars` override globals with the same name. |
+
+Settings are resolved with the following precedence (highest first):
+
+| Setting | Precedence |
+| ------- | ---------- |
+| config file path | `--config` flag > `$HOME/.clip.yml` |
+| `editor` | `--editor` flag > `$EDITOR` environment variable > config file > default (`nano`) |
+| `templatedir` | `-t`/`--template-dir` flag > config file > default (`$HOME/clip`) |
+| `vars` | config file > default (`name: Clip User`) |
 
 Template configuration can be done almost entirely through the `clip` CLI and it's subcommands (create, edit, remove, rename, list, etc)
 
 ## Templates
-Clip templates are YAML files with [Golang templated](https://golang.org/pkg/text/template/) text snippets and variables to use for substitutions in the template. Templates exist in a directory managed by Clip. By default, the template directory is `$HOME/clip/`, but this can be changed by editing the `templatedir` setting in the config file or passing the `--templatedir` flag at runtime.
+Clip templates are YAML files with [Golang templated](https://golang.org/pkg/text/template/) text snippets and variables to use for substitutions in the template. Templates exist in a directory managed by Clip. By default, the template directory is `$HOME/clip/`, but this can be changed by editing the `templatedir` setting in the config file or passing the `-t`/`--template-dir` flag at runtime.
+
+A template's name is its path inside the template directory without the `.yml` (or `.yaml`) extension, so `$HOME/clip/work/standup.yml` is the template `work/standup`. `clip list` prints exactly these names, and every other command accepts them; `clip create work/standup` creates the subdirectory as needed.
 
 Clip also imports the [sprout template function library](https://docs.atom.codes/sprout) and loads functions from all registries _except the `backward` registry which contains deprecated functions_.
 
@@ -183,13 +244,13 @@ In order to cut a release, a new semver tag must be pushed to the repo:
 
 ## TODO
 - [ ] allow editing Clip config directly through `clip` commands like template files?
-- [ ] allow using different config file locations (viper has the ability to search config paths, I just couldn't think of other places I'd want the config during development)
+- [ ] allow searching multiple config file locations (beyond the explicit `--config` flag)
 - [X] figure out how to post release binaries on github (never done it before ¯\\\_(ツ)_/¯)
 - [X] figure out how to report version/commit info that I'm bothering to embed in the build
 - [X] fix reading environment var for EDITOR so it actually overrides config defaults
 - [X] convert all manual filepath building to use `path.Join`
 - [X] add ability copy from stdin? would allow ability to pipe output from commands to `clip copy`, which may be a nice abstraction to having to remember OS-specific commands
-- [ ] add tests
+- [X] add tests
 
 ## Credits/Thanks
-Clip is written using the [Cobra](https://github.com/spf13/cobra) and [Viper](https://github.com/spf13/viper) libraries, with the clipboard management provided by [atotto/clipboard library](https://github.com/atotto/clipboard). They made my life a heck of a life easier, so thanks to them <3.
+Clip is written using the [kingpin](https://github.com/alecthomas/kingpin) library, with the clipboard management provided by the [atotto/clipboard library](https://github.com/atotto/clipboard). They made my life a heck of a lot easier, so thanks to them <3. Thanks also to [Cobra](https://github.com/spf13/cobra) and [Viper](https://github.com/spf13/viper), which powered clip for its first several years.
