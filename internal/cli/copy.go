@@ -26,8 +26,8 @@ import (
 	"os"
 
 	"github.com/alecthomas/kingpin/v2"
-	"github.com/atotto/clipboard"
 
+	"github.com/tjhop/clip/internal/clipboard"
 	"github.com/tjhop/clip/internal/config"
 	"github.com/tjhop/clip/internal/template"
 )
@@ -50,7 +50,7 @@ func runCopy(cfg config.Config) error {
 		if err != nil {
 			return fmt.Errorf("could not read stdin: %w", err)
 		}
-		if err := clipboard.WriteAll(string(input)); err != nil {
+		if err := clipboard.Copy(input); err != nil {
 			return fmt.Errorf("could not write stdin to clipboard: %w", err)
 		}
 		return nil
@@ -71,7 +71,7 @@ func runCopy(cfg config.Config) error {
 		return fmt.Errorf("could not render Clip template '%s': %w", copyTemplate, err)
 	}
 
-	if err := clipboard.WriteAll(rendered); err != nil {
+	if err := clipboard.Copy([]byte(rendered)); err != nil {
 		return fmt.Errorf("could not write Clip template '%s' to clipboard: %w", copyTemplate, err)
 	}
 

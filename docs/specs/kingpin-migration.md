@@ -241,5 +241,6 @@ tests do not run in parallel and reset those variables between cases.
   from the application name and flag name only, so same-named flags on
   different subcommands would share one variable.
 - No logging framework; clip prints results.
-- No change to the template file format, the sprout registries, or the
-  clipboard library.
+- No change to the template file format or the sprout registries. The
+  clipboard library is replaced in its own change; see
+  [clipboard-backend.md](clipboard-backend.md).

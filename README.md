@@ -24,6 +24,8 @@ Running `clip` with no subcommand lists your templates (`clip list`). Copying a 
 
 With no template argument, `clip copy` reads stdin until EOF and copies it verbatim, so `some-command | clip copy` works as an OS-agnostic clipboard pipe.
 
+On Linux and the BSDs, `clip copy` leaves a small background process (`clip serve-clipboard`) serving the text, same as `wl-copy` does: on X11 and Wayland the program that copied is the one that answers pastes, so the text would vanish the moment `clip` exited. It exits on its own once something else takes the clipboard. Compositors with the data-control protocol are used directly; the rest (GNOME included) go through XWayland, so `DISPLAY` must be set (GNOME sets it). macOS and Windows hold the data themselves, so there's no background process. The helper reads the copy back before `clip copy` returns, so a copy that can't be pasted fails with exit 1 instead of leaving a broken clipboard; on X11 (GNOME's XWayland included) that is anything over 262116 bytes, a limit of the library's X11 client.
+
 You can view all available commands with `clip --help`, as well as get help from each specific subcommand with `clip $command --help`:
 ```shell
 ~ $ clip --help
@@ -258,4 +260,4 @@ In order to cut a release, a new semver tag must be pushed to the repo:
 - [X] add tests
 
 ## Credits/Thanks
-Clip is written using the [kingpin](https://github.com/alecthomas/kingpin) library, with the clipboard management provided by the [atotto/clipboard library](https://github.com/atotto/clipboard). They made my life a heck of a lot easier, so thanks to them <3. Thanks also to [Cobra](https://github.com/spf13/cobra) and [Viper](https://github.com/spf13/viper), which powered clip for its first several years.
+Clip is written using the [kingpin](https://github.com/alecthomas/kingpin) library, with the clipboard management provided by the [golang.design/x/clipboard library](https://github.com/golang-design/clipboard). They made my life a heck of a lot easier, so thanks to them <3. Thanks also to [Cobra](https://github.com/spf13/cobra), [Viper](https://github.com/spf13/viper), and [atotto/clipboard](https://github.com/atotto/clipboard) for powering clip's first several years.

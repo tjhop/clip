@@ -24,7 +24,8 @@ import (
 	"fmt"
 
 	"github.com/alecthomas/kingpin/v2"
-	"github.com/atotto/clipboard"
+
+	"github.com/tjhop/clip/internal/clipboard"
 )
 
 var pasteCmdName string
@@ -35,11 +36,11 @@ func registerPasteCmd(app *kingpin.Application) {
 }
 
 func runPaste() error {
-	contents, err := clipboard.ReadAll()
+	contents, err := clipboard.Paste()
 	if err != nil {
 		return fmt.Errorf("could not read clipboard: %w", err)
 	}
 
-	fmt.Println(contents)
+	fmt.Println(string(contents))
 	return nil
 }

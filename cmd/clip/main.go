@@ -23,10 +23,12 @@ package main
 
 import (
 	"os"
+	"strconv"
 
 	"github.com/alecthomas/kingpin/v2"
 
 	"github.com/tjhop/clip/internal/cli"
+	"github.com/tjhop/clip/internal/clipboard"
 )
 
 func main() {
@@ -37,6 +39,21 @@ func main() {
 	if len(args) > 0 {
 		args = args[1:]
 	}
+
+	// The clipboard helper is clip re-executed by `clip copy` with the byte
+	// count it is about to receive. It never goes through kingpin, so it stays
+	// out of help and completion and reads no config.
+	if len(args) == 2 && args[0] == clipboard.ServeCommandName {
+		size, err := strconv.Atoi(args[1])
+		if err != nil || size < 0 {
+			app.Fatalf("%s: bad byte count %q", clipboard.ServeCommandName, args[1])
+		}
+		if err := clipboard.Serve(os.Stdin, size, os.NewFile(3, "ready")); err != nil {
+			app.Fatalf("%v", err)
+		}
+		return
+	}
+
 	cmdName := kingpin.MustParse(app.Parse(cli.CompletionArgs(args)))
 
 	if err := cli.Run(cmdName); err != nil {
