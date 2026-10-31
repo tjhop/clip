@@ -1,0 +1,45 @@
+version: "2"
+linters:
+  enable:
+    - errorlint
+    - exptostd
+    - fatcontext
+    - gocritic
+    - godot
+    - govet
+    - ineffassign
+    - misspell
+    - nilnesserr
+    - nolintlint
+    - perfsprint
+    - predeclared
+    - revive
+    - sloglint
+    - staticcheck
+    - testifylint
+    - unconvert
+    - unused
+    - usestdlibvars
+    - whitespace
+  settings:
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - style
+        - performance
+  exclusions:
+    presets:
+      - std-error-handling
+formatters:
+  enable:
+    - gofumpt
+    - goimports
+  settings:
+    goimports:
+      local-prefixes:
+        - github.com/tjhop/clip
+issues:
+  # Report every instance; the defaults cap repeats at three per message and
+  # fifty per linter.
+  max-same-issues: 0
+  max-issues-per-linter: 0

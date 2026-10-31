@@ -216,17 +216,22 @@ Hello, McLovin!
 ### Binaries
 Binaries are built by [goreleaser and github actions](https://goreleaser.com/ci/actions/). Please see [Releases](#Releases) for more information on building binaries for release.
 
-For local development, binaries can be built with the included Makefile:
+For local development, `devbox.json` provides the toolchain the Makefile expects (Go, golangci-lint, goreleaser); `devbox shell` drops you into it. nilaway is a `go.mod` tool dependency, so `make lint` builds it with the repo's Go toolchain. Binaries are built with the Makefile:
 
 ```bash
-~/go/src/github.com/tjhop/clip (master [  ]) -> make
-# autogenerate help messages for comment lines with 2 `#`
- help:                  print this help message
- tidy:                  tidy modules
- fmt:                   apply go code style formatter
- lint:                  run linters
- binary:                build a binary
- build:                 alias for `binary`
+~ $ make
+
+Usage:
+  make <target>
+
+Targets:
+  help                           print this help message
+  tidy                           tidy modules
+  fmt                            apply go code style formatter
+  lint                           run linters
+  test                           run unit tests
+  binary                         build a binary via goreleaser
+  build                          alias for `binary`
 ```
 
 ### Releases

@@ -1,31 +1,31 @@
 GOCMD := go
 GOFMT := ${GOCMD} fmt
 GOMOD := ${GOCMD} mod
-GOLANGCILINT_CACHE := ${CURDIR}/.golangci-lint/build/cache
 
-## help:			print this help message
 .PHONY: help
-help: Makefile
-	# autogenerate help messages for comment lines with 2 `#`
-	@sed -n 's/^##//p' $<
+help: ## print this help message
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n\nTargets:\n"} /^[a-z0-9A-Z_-]+:.*?##/ { printf "  \033[36m%-30s\033[0m%s\n", $$1, $$2 }' $(MAKEFILE_LIST)
 
-## tidy:			tidy modules
-tidy:
+.PHONY: tidy
+tidy: ## tidy modules
 	${GOMOD} tidy
 
-## fmt:			apply go code style formatter
-fmt:
+.PHONY: fmt
+fmt: ## apply go code style formatter
 	${GOFMT} -x ./...
 
-## lint:			run linters
-lint:
-	mkdir -p ${GOLANGCILINT_CACHE} || true
-	podman run --rm -v ${CURDIR}:/app -v ${GOLANGCILINT_CACHE}:/root/.cache -w /app docker.io/golangci/golangci-lint:latest golangci-lint run -v
-	nilaway ./...
+.PHONY: lint
+lint: ## run linters
+	golangci-lint run -v
+	${GOCMD} tool nilaway ./...
 
-## binary:		build a binary
-binary: fmt tidy lint
+.PHONY: test
+test: fmt tidy ## run unit tests
+	${GOCMD} test -race -v ./...
+
+.PHONY: binary
+binary: fmt tidy lint test ## build a binary via goreleaser
 	goreleaser build --clean --single-target --snapshot --output .
 
-## build:			alias for `binary`
-build: binary
+.PHONY: build
+build: binary ## alias for `binary`

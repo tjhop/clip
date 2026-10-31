@@ -18,3 +18,9 @@
 
 dist/
 .golangci-lint/
+.devbox/
+# Tracked despite *.lock: it pins each devbox tool's nixpkgs revision.
+!devbox.lock
+
+# Local binary from `make binary`
+/clip
