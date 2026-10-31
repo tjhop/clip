@@ -1,6 +1,6 @@
 # Clip - A Templated Clipboard Manager
 
-[![license](https://img.shields.io/github/license/tjhop/clip)](https://github.com/tjhop/clip/blob/master/LICENSE)
+[![license](https://img.shields.io/github/license/tjhop/clip)](https://github.com/tjhop/clip/blob/main/LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/tjhop/clip)](https://goreportcard.com/report/github.com/tjhop/clip)
 [![Latest Release](https://img.shields.io/github/v/release/tjhop/clip)](https://github.com/tjhop/clip/releases/latest)
 ![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/tjhop/clip/total)
@@ -175,10 +175,10 @@ In order to cut a release, a new semver tag must be pushed to the repo:
     Note: It's highly recommended to install [SVU](https://github.com/caarlos0/svu) to help with tag creation.
 
     ```shell
-    git checkout master
-    git fetch --tags origin master
+    git checkout main
+    git fetch --tags origin main
     git tag $(svu next)
-    git push --tags upstream master
+    git push --tags upstream main
     ```
 
 ## TODO
