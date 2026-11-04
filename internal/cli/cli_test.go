@@ -27,7 +27,9 @@ import (
 	"path/filepath"
 	"reflect"
 	"slices"
+	"strings"
 	"testing"
+	"testing/iotest"
 
 	"github.com/tjhop/clip/internal/config"
 )
@@ -135,6 +137,41 @@ func TestParse(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestReadStdin(t *testing.T) {
+	tests := []struct {
+		name string
+		in   string
+		want string
+	}{
+		{"empty", "", ""},
+		{"no newline is untouched", "hello world", "hello world"},
+		{"one trailing newline is dropped", "hello world\n", "hello world"},
+		{"trailing CRLF is dropped", "hello world\r\n", "hello world"},
+		{"only the last newline goes", "hello\n\n", "hello\n"},
+		{"inner newlines stay", "a\nb\n", "a\nb"},
+		{"lone newline becomes empty", "\n", ""},
+		{"bare trailing CR stays", "hello\r", "hello\r"},
+		{"trailing spaces stay", "hello \n", "hello "},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			got, err := readStdin(strings.NewReader(tc.in))
+			if err != nil {
+				t.Fatalf("readStdin(%q) error = %v, want nil", tc.in, err)
+			}
+			if string(got) != tc.want {
+				t.Errorf("readStdin(%q) = %q, want %q", tc.in, got, tc.want)
+			}
+		})
+	}
+
+	t.Run("read error is returned", func(t *testing.T) {
+		if _, err := readStdin(iotest.ErrReader(errors.New("boom"))); err == nil {
+			t.Error("readStdin() error = nil, want the reader's error")
+		}
+	})
 }
 
 func TestSplitTags(t *testing.T) {

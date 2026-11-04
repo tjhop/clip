@@ -39,14 +39,14 @@ var (
 
 func registerCopyCmd(app *kingpin.Application) {
 	cmd := app.Command("copy", "Copy a Clip template/stdin to your clipboard.").Alias("load").Alias("in")
-	cmd.HelpLong("Copy a Clip template or command output from stdin to your clipboard. With no template argument, stdin is read until EOF and copied verbatim.")
+	cmd.HelpLong("Copy a Clip template or command output from stdin to your clipboard. With no template argument, stdin is read until EOF and copied with its final newline dropped, so what echo and most commands print pastes without a trailing line break.")
 	cmd.Arg("template", "Name of the Clip template to copy.").StringVar(&copyTemplate)
 	copyCmdName = cmd.FullCommand()
 }
 
 func runCopy(cfg config.Config) error {
 	if copyTemplate == "" {
-		input, err := io.ReadAll(os.Stdin)
+		input, err := readStdin(os.Stdin)
 		if err != nil {
 			return fmt.Errorf("could not read stdin: %w", err)
 		}
@@ -76,4 +76,22 @@ func runCopy(cfg config.Config) error {
 	}
 
 	return nil
+}
+
+// readStdin reads r to EOF and drops the one line terminator echo and most
+// commands end their output with, so the paste carries no stray line break.
+// Only the last one goes: blank lines before it are content.
+func readStdin(r io.Reader) ([]byte, error) {
+	input, err := io.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
+	n := len(input)
+	if n > 0 && input[n-1] == '\n' {
+		n--
+		if n > 0 && input[n-1] == '\r' {
+			n--
+		}
+	}
+	return input[:n], nil
 }
